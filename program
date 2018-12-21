@@ -1,0 +1,57 @@
+"""
+Created on Thu Dec 20 21:05:16 2018
+
+@author: nelki
+"""
+import numpy as np
+from math import pi
+import matplotlib.pyplot as plt
+
+Vi = 40 # inital velocity
+Cd = 0.75 # the drag coefficient
+theta = 30 # degrees from the normal
+A = .021*pi #4.41 # Cross-sectional area that the wind effects
+rho = 1.14 # density of the fluid 
+m = 1 # mass of the rocket
+dt = 1e-6
+g = 9.8
+skip = 10000
+count = 0
+Vh = Vi*np.cos(theta*pi/180)
+Vx = Vi*np.sin(theta*pi/180)
+
+x = 0
+dist = 0
+C = (Cd*A*rho)/(2*m)
+t = 0
+height = 0
+h = 0
+
+what = [0 for i in range(600)]
+when = [0 for i in range(600)]
+j = 0
+while True:
+    Vh = Vh - g*dt - C*Vh*abs(Vh)*dt
+    Vx = Vx - C*Vx*Vx*dt
+    h += Vh*dt
+    if h > height:
+        height = h
+    dist += Vx*dt
+    t += dt
+    if count == skip:
+        what[j] = h
+        when[j] = dist
+        j +=1
+        count = 0
+    else:
+        count += 1
+    if h <= 0:
+        break
+
+plt.plot(when,what)
+
+plt.show()
+
+print(dist,"distance traveled latterally")
+print(height,"max height")
+print(t,"s of travel time.")
